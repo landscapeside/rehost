@@ -1,0 +1,3 @@
+rootProject.name='ReHost'
+include ':app'
+include ':rehost'

@@ -1,0 +1,22 @@
+[
+  {
+    "name": "dev",
+    "urls": [
+      "https://www.baidu.com/",
+      "https://www.google.com/",
+      "https://www.youku.com/",
+      "https://www.netflex.com/",
+      "https://www.manhuajia.com/"
+    ]
+  },
+  {
+    "name": "release",
+    "urls": [
+      "https://www.prodd.com/",
+      "https://www.youtube.com/",
+      "https://www.google.com/",
+      "https://www.hahaahhaah.com/",
+      "https://www.daimajia.com/"
+    ]
+  }
+]
