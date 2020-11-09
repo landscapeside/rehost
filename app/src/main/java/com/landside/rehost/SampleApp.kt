@@ -12,37 +12,38 @@ import java.util.concurrent.TimeUnit
 
 class SampleApp : Application() {
 
-  override fun onCreate() {
-    super.onCreate()
-    RxJavaPlugins.reset()
-    RxJavaPlugins.setErrorHandler {
-      MainActivity.appendLog(it.localizedMessage)
+    override fun onCreate() {
+        super.onCreate()
+        RxJavaPlugins.reset()
+        RxJavaPlugins.setErrorHandler {
+            MainActivity.appendLog(it.localizedMessage)
+        }
+        ReHost.init(
+            this,
+            BuildConfig.DEBUG,
+            getRetrofitBuilder()
+        )
     }
-    ReHost.init(
-        this,
-        getRetrofitBuilder()
-    )
-  }
 
-  private fun getRetrofitBuilder(): Retrofit.Builder {
-    return Retrofit.Builder()
-        .client(genOkClient())
-        .addConverterFactory(GsonConverterFactory.create(Gson()))
-        .addCallAdapterFactory(RxJava2CallAdapterFactory.create()) // 支持RxJava
-  }
+    private fun getRetrofitBuilder(): Retrofit.Builder {
+        return Retrofit.Builder()
+            .client(genOkClient())
+            .addConverterFactory(GsonConverterFactory.create(Gson()))
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create()) // 支持RxJava
+    }
 
-  private fun genOkClient(): OkHttpClient {
-    val builder = OkHttpClient.Builder()
-    builder.connectTimeout(15, TimeUnit.SECONDS)
-    builder.readTimeout(20, TimeUnit.SECONDS)
-    builder.writeTimeout(20, TimeUnit.SECONDS)
-    builder.hostnameVerifier { hostname, session -> true }
-    val loggingInterceptor =
-      HttpLoggingInterceptor(
-          MainActivity.logger
-      )
-    loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-    builder.addInterceptor(loggingInterceptor)
-    return builder.build()
-  }
+    private fun genOkClient(): OkHttpClient {
+        val builder = OkHttpClient.Builder()
+        builder.connectTimeout(15, TimeUnit.SECONDS)
+        builder.readTimeout(20, TimeUnit.SECONDS)
+        builder.writeTimeout(20, TimeUnit.SECONDS)
+        builder.hostnameVerifier { hostname, session -> true }
+        val loggingInterceptor =
+            HttpLoggingInterceptor(
+                MainActivity.logger
+            )
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        builder.addInterceptor(loggingInterceptor)
+        return builder.build()
+    }
 }

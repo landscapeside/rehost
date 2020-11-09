@@ -7,6 +7,9 @@ import retrofit2.Retrofit
 
 object ReHost {
 
+  private var RELEASE = "release"
+  private var debug:Boolean = false
+
   private var builder: Retrofit.Builder? = null
   internal val cases: MutableList<ConfCase> = mutableListOf()
   internal var currentCase: Int = 0
@@ -14,8 +17,11 @@ object ReHost {
 
   fun init(
     context: Context,
-    retrofitBuilder: Retrofit.Builder
+    debug:Boolean,
+    retrofitBuilder: Retrofit.Builder,
+    defRelease:String = RELEASE
   ) {
+    this.debug = debug
     builder = retrofitBuilder
     val hostsType = object : TypeToken<List<ConfCase>>() {}.type
     val hosts: List<ConfCase> = JSONS.parseObject(
@@ -47,6 +53,7 @@ object ReHost {
         }
       }
     }
+    RELEASE = defRelease
   }
 
   fun openBoard(context: Context) {
@@ -100,20 +107,29 @@ object ReHost {
     idx: Int,
     clazz: Class<T>
   ): T {
-    if (cases[currentCase].urls[idx].isEmpty()) {
-      throw IllegalStateException("lack url configuration within [${cases[currentCase].name}]")
+    if (currentCase().urls[idx].isEmpty()) {
+      throw IllegalStateException("lack url configuration within [${currentCase().name}]")
     }
-    if (cases[currentCase].urls[idx].isNotEmpty() && !retrofitCache.containsKey(
-            cases[currentCase].urls[idx]
+    if (currentCase().urls[idx].isNotEmpty() && !retrofitCache.containsKey(
+        currentCase().urls[idx]
         )
     ) {
-      retrofitCache[cases[currentCase].urls[idx]] =
-        builder?.baseUrl(cases[currentCase].urls[idx])?.build()
+      retrofitCache[currentCase().urls[idx]] =
+        builder?.baseUrl(currentCase().urls[idx])?.build()
             ?: throw IllegalStateException("retrofit builder is null,call init in application")
     }
-    return retrofitCache[cases[currentCase].urls[idx]]?.create(clazz)
+    return retrofitCache[currentCase().urls[idx]]?.create(clazz)
         ?: throw IllegalStateException(
-            "can not find retrofit instance with url[${cases[currentCase].urls[idx]}]"
+            "can not find retrofit instance with url[${currentCase().urls[idx]}]"
         )
+  }
+
+  private fun currentCase():ConfCase{
+    if (debug){
+      return cases[currentCase]
+    }
+    return cases.firstOrNull{it.name == RELEASE}?:throw IllegalStateException(
+      "cannot find configuration called [${RELEASE}]"
+    )
   }
 }
