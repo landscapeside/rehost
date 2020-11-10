@@ -7,22 +7,25 @@ import retrofit2.Retrofit
 
 object ReHost {
 
-  private var RELEASE = "release"
+  internal var RELEASE = "release"
   private var debug:Boolean = false
 
   private var builder: Retrofit.Builder? = null
   internal val cases: MutableList<ConfCase> = mutableListOf()
   internal var currentCase: Int = 0
+  internal var onReleaseSwitch:(Boolean)->Unit = {}
   private val retrofitCache: MutableMap<String, Retrofit> = mutableMapOf()
 
   fun init(
     context: Context,
     debug:Boolean,
     retrofitBuilder: Retrofit.Builder,
-    defRelease:String = RELEASE
+    defRelease:String = RELEASE,
+    onReleaseSwitch:(Boolean)->Unit = {}
   ) {
     this.debug = debug
     builder = retrofitBuilder
+    this.onReleaseSwitch = onReleaseSwitch
     val hostsType = object : TypeToken<List<ConfCase>>() {}.type
     val hosts: List<ConfCase> = JSONS.parseObject(
         FileReader.requestMockString(

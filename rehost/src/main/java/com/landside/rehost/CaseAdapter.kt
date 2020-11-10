@@ -40,6 +40,7 @@ class CaseAdapter(context: Context,val onItemEdit:(Int)->Unit) : RecyclerView.Ad
           (it as CheckBox).isChecked = true
         } else {
           ReHost.currentCase = checkPos
+          ReHost.onReleaseSwitch(ReHost.cases[position].name == ReHost.RELEASE)
           notifyDataSetChanged()
         }
       }
