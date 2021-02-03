@@ -3,9 +3,11 @@ package com.landside.rehost
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.widget.TextView
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.btn_clean
 import kotlinx.android.synthetic.main.activity_main.btn_open_board
@@ -18,7 +20,7 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    handler = object :Handler(){
+    handler = object : Handler() {
       override fun handleMessage(msg: Message) {
         tv_log.text = (msg.obj as String)
       }
@@ -35,27 +37,42 @@ class MainActivity : AppCompatActivity() {
           .getSomeData()
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread())
-          .subscribe()
-      ReHost.createApi1(Api::class.java)
-          .getSomeData()
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe()
-      ReHost.createApi2(Api::class.java)
-          .getSomeData()
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe()
-      ReHost.createApi3(Api::class.java)
-          .getSomeData()
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe()
-      ReHost.createApi4(Api::class.java)
-          .getSomeData()
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe()
+          .subscribe(object : Observer<SomeDto>{
+            override fun onComplete() {
+            }
+
+            override fun onSubscribe(d: Disposable) {
+            }
+
+            override fun onNext(t: SomeDto) {
+              appendLog("get result:${JSONS.parseJson(t)}")
+            }
+
+            override fun onError(e: Throwable) {
+              appendLog(e.localizedMessage)
+            }
+
+          })
+//      ReHost.createApi1(Api::class.java)
+//          .getSomeData()
+//          .subscribeOn(Schedulers.io())
+//          .observeOn(AndroidSchedulers.mainThread())
+//          .subscribe()
+//      ReHost.createApi2(Api::class.java)
+//          .getSomeData()
+//          .subscribeOn(Schedulers.io())
+//          .observeOn(AndroidSchedulers.mainThread())
+//          .subscribe()
+//      ReHost.createApi3(Api::class.java)
+//          .getSomeData()
+//          .subscribeOn(Schedulers.io())
+//          .observeOn(AndroidSchedulers.mainThread())
+//          .subscribe()
+//      ReHost.createApi4(Api::class.java)
+//          .getSomeData()
+//          .subscribeOn(Schedulers.io())
+//          .observeOn(AndroidSchedulers.mainThread())
+//          .subscribe()
     }
   }
 
@@ -67,9 +84,10 @@ class MainActivity : AppCompatActivity() {
 
     val logger = HttpLoggingInterceptor.Logger {
       appendLog(it)
+      Log.d("rehost", "${it}")
     }
 
-    fun appendLog(log:String){
+    fun appendLog(log: String) {
       logBuffer.appendln(log)
       handler.sendMessage(handler.obtainMessage(0, logBuffer.toString()))
     }

@@ -7,7 +7,8 @@ import retrofit2.Retrofit
 
 object ReHost {
 
-  internal var RELEASE = "release"
+  var RELEASE = "release"
+    private set
   private var debug:Boolean = false
 
   private var builder: Retrofit.Builder? = null

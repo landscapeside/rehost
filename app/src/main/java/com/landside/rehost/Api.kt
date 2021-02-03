@@ -4,8 +4,11 @@ import io.reactivex.Observable
 import okhttp3.Response
 import okhttp3.ResponseBody
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface Api {
-  @GET("api1")
-  fun getSomeData(): Observable<ResponseBody>
+  @GET("lbapi/cms/getcmsdata")
+  fun getSomeData(
+    @Query("pageId") pageId: String = "375"
+  ): Observable<SomeDto>
 }

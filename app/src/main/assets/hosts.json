@@ -1,8 +1,14 @@
 [
   {
+    "name": "virtualServer",
+    "urls": [
+      "http://localhost:10000/"
+    ]
+  },
+  {
     "name": "dev",
     "urls": [
-      "https://www.baidu.com/",
+      "http://localhost:10000/",
       "https://www.google.com/",
       "https://www.youku.com/",
       "https://www.netflex.com/",
