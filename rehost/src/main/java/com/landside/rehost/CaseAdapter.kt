@@ -41,6 +41,7 @@ class CaseAdapter(context: Context,val onItemEdit:(Int)->Unit) : RecyclerView.Ad
         } else {
           ReHost.currentCase = checkPos
           ReHost.onReleaseSwitch(ReHost.cases[position].name == ReHost.RELEASE)
+          ReHost.currentCaseName = ReHost.cases[position].name
           notifyDataSetChanged()
         }
       }

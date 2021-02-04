@@ -13,6 +13,8 @@ object ReHost {
 
   private var builder: Retrofit.Builder? = null
   internal val cases: MutableList<ConfCase> = mutableListOf()
+  var currentCaseName:String = ""
+    internal set
   internal var currentCase: Int = 0
   internal var onReleaseSwitch:(Boolean)->Unit = {}
   private val retrofitCache: MutableMap<String, Retrofit> = mutableMapOf()
@@ -58,6 +60,7 @@ object ReHost {
       }
     }
     RELEASE = defRelease
+    currentCaseName = cases[currentCase].name
   }
 
   fun openBoard(context: Context) {
