@@ -60,6 +60,9 @@ object ReHost {
       }
     }
     RELEASE = defRelease
+    if (!debug) {
+      currentCase = cases.indexOfFirst { it.name == RELEASE }
+    }
     currentCaseName = cases[currentCase].name
   }
 
