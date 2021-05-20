@@ -9,22 +9,22 @@ object ReHost {
 
   var RELEASE = "release"
     private set
-  private var debug:Boolean = false
+  private var debug: Boolean = false
 
   private var builder: Retrofit.Builder? = null
   internal val cases: MutableList<ConfCase> = mutableListOf()
-  var currentCaseName:String = ""
+  var currentCaseName: String = ""
     internal set
   internal var currentCase: Int = 0
-  internal var onReleaseSwitch:(Boolean)->Unit = {}
+  internal var onReleaseSwitch: (Boolean) -> Unit = {}
   private val retrofitCache: MutableMap<String, Retrofit> = mutableMapOf()
 
   fun init(
     context: Context,
-    debug:Boolean,
+    debug: Boolean,
     retrofitBuilder: Retrofit.Builder,
-    defRelease:String = RELEASE,
-    onReleaseSwitch:(Boolean)->Unit = {}
+    defRelease: String = RELEASE,
+    onReleaseSwitch: (Boolean) -> Unit = {}
   ) {
     this.debug = debug
     builder = retrofitBuilder
@@ -53,11 +53,11 @@ object ReHost {
     if (cases.isNotEmpty()) {
       cases.first()
           .urls.forEach {
-        if (it.isNotEmpty()) {
-          retrofitCache[it] = retrofitBuilder.baseUrl(it)
-              .build()
-        }
-      }
+            if (it.isNotEmpty()) {
+              retrofitCache[it] = retrofitBuilder.baseUrl(it)
+                  .build()
+            }
+          }
     }
     RELEASE = defRelease
     if (!debug) {
@@ -121,11 +121,12 @@ object ReHost {
       throw IllegalStateException("lack url configuration within [${currentCase().name}]")
     }
     if (currentCase().urls[idx].isNotEmpty() && !retrofitCache.containsKey(
-        currentCase().urls[idx]
+            currentCase().urls[idx]
         )
     ) {
       retrofitCache[currentCase().urls[idx]] =
-        builder?.baseUrl(currentCase().urls[idx])?.build()
+        builder?.baseUrl(currentCase().urls[idx])
+            ?.build()
             ?: throw IllegalStateException("retrofit builder is null,call init in application")
     }
     return retrofitCache[currentCase().urls[idx]]?.create(clazz)
@@ -134,12 +135,23 @@ object ReHost {
         )
   }
 
-  private fun currentCase():ConfCase{
-    if (debug){
+  private fun currentCase(): ConfCase {
+    if (debug) {
       return cases[currentCase]
     }
-    return cases.firstOrNull{it.name == RELEASE}?:throw IllegalStateException(
-      "cannot find configuration called [${RELEASE}]"
+    return cases.firstOrNull { it.name == RELEASE } ?: throw IllegalStateException(
+        "cannot find configuration called [${RELEASE}]"
     )
   }
+
+  fun api0(): String = currentCase().urls[0]
+  fun api1(): String = currentCase().urls[1]
+  fun api2(): String = currentCase().urls[2]
+  fun api3(): String = currentCase().urls[3]
+  fun api4(): String = currentCase().urls[4]
+  fun api5(): String = currentCase().urls[5]
+  fun api6(): String = currentCase().urls[6]
+  fun api7(): String = currentCase().urls[7]
+  fun api8(): String = currentCase().urls[8]
+  fun api9(): String = currentCase().urls[9]
 }
